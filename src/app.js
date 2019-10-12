@@ -28,4 +28,8 @@ app.get("/", (req, res) => {
   res.send("Hello, boilerplate!");
 });
 
+app.get("/notes", (req, res) => {
+  res.send("all notes");
+});
+
 module.exports = app;
