@@ -4,8 +4,9 @@ const morgan = require("morgan");
 const cors = require("cors");
 const helmet = require("helmet");
 const { NODE_ENV } = require("./config");
-const NotesService = require("./notes/notes-service");
-const FoldersService = require("./folders/folders-service");
+const notesRouter = require("./notes/notes-router");
+const foldersRouter = require("./folders/folders-router");
+
 const app = express();
 
 const morganOption = NODE_ENV === "production" ? "tiny" : "common";
@@ -29,8 +30,8 @@ app.get("/", (req, res) => {
   res.send("Hello, boilerplate!");
 });
 
-app.get("/notes", (req, res) => {
-  res.send("all notes");
-});
+// Routes:
+app.use("/api/notes", notesRouter);
+app.use("/api/folders", foldersRouter);
 
 module.exports = app;
