@@ -59,6 +59,7 @@ notesRouter
           });
         }
         res.note = note;
+        next();
       })
       .catch(next);
   })

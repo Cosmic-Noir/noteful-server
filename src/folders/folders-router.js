@@ -24,13 +24,13 @@ foldersRouter
       .catch(next);
   })
   .post(jsonParser, (req, res, next) => {
-    const { title } = req.body;
-    const newFolder = { title };
+    const { folder_name } = req.body;
+    const newFolder = { folder_name };
 
     // Needs to be tested - may cause issues
-    if (!title) {
+    if (!folder_name) {
       return res.status(400).json({
-        error: { message: `Title is missing for new folder` }
+        error: { message: `folder_name is missing for new folder` }
       });
     }
 
@@ -54,6 +54,7 @@ foldersRouter
           });
         }
         res.folder = folder;
+        next();
       })
       .catch(next);
   })
@@ -68,12 +69,14 @@ foldersRouter
       .catch(next);
   })
   .patch(jsonParser, (req, res, next) => {
-    const { title } = req.body;
-    const folderToUpdate = { title };
+    const { folder_name } = req.body;
+    const folderToUpdate = { folder_name };
 
-    if (!title) {
+    if (!folder_name) {
       return res.status(400).json({
-        error: { message: `Request body must contain title of updated Folder` }
+        error: {
+          message: `Request body must contain folder_name of updated Folder`
+        }
       });
     }
 
