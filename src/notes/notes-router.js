@@ -30,7 +30,7 @@ notesRouter
     const { title, content, folder_id } = req.body;
     const newNote = { title, content };
 
-    for (const [key, value] of Object.defineProperties(newNote)) {
+    for (const [key, value] of Object.entries(newNote)) {
       if (value == null) {
         return res.status(400).json({
           error: { message: `Missing '${key}' in request body ` }
@@ -43,7 +43,8 @@ notesRouter
       .then(note => {
         res
           .status(201)
-          .location(path.posix.join(req.originalUrl, `/${note.id}`));
+          .location(path.posix.join(req.originalUrl, `/${note.id}`))
+          .json(sterilizedNote(note));
       })
       .catch(next);
   });
