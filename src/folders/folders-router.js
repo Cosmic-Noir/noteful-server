@@ -38,7 +38,8 @@ foldersRouter
       .then(folder => {
         res
           .status(201)
-          .location(path.posix.join(req.originalUrl, `/${folder_id}`));
+          .location(path.posix.join(req.originalUrl, `/${folder.id}`))
+          .json(sterilizedFolder(folder));
       })
       .catch(next);
   });
