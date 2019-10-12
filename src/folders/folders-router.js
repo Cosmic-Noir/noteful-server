@@ -10,7 +10,7 @@ const jsonParser = express.json();
 // sterilized folder:
 const sterilizedFolder = folder => ({
   id: folder.id,
-  title: xss(folder.title)
+  folder_name: xss(folder.folder_name)
 });
 
 foldersRouter
