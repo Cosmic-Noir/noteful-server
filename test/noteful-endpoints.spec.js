@@ -176,4 +176,25 @@ describe(`POST /api/notes`, () => {
           .expect(res.body);
       });
   });
+
+  const requiredFields = ["title", "content", "folder_id"];
+
+  requiredFields.forEach(field => {
+    const newNote = {
+      title: "New Test Note",
+      content: "New test content",
+      folder_id: 1
+    };
+
+    it(`Responds with 400 and error when '${field}' is missing`, () => {
+      delete newNote[field];
+
+      return supertest(app)
+        .post("/api/notes")
+        .send(newNote)
+        .expect(400, {
+          error: { message: `Missing '${field}' in request body` }
+        });
+    });
+  });
 });
