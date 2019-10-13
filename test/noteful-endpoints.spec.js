@@ -35,4 +35,24 @@ describe(`GET /api/notes`, () => {
         .expect(200, []);
     });
   });
+
+  context(`Given there are notes`, () => {
+    const testFolders = makeFoldersArray();
+    const testNotes = makeNotesArray();
+
+    beforeEach("Insert testNotes into test db", () => {
+      return db
+        .into("noteful_folders")
+        .insert(testFolders)
+        .then(() => {
+          return db.into("noteful_notes").insert(testNotes);
+        });
+    });
+
+    it(`GET /api/notes responds with 200 and all notes`, () => {
+      return supertest(app)
+        .get("/api/notes")
+        .expect(200, testNotes);
+    });
+  });
 });
