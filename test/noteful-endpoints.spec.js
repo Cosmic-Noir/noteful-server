@@ -40,7 +40,7 @@ describe(`GET /api/notes`, () => {
     const testFolders = makeFoldersArray();
     const testNotes = makeNotesArray();
 
-    beforeEach("Insert testNotes into test db", () => {
+    beforeEach("Insert folders and notes", () => {
       return db
         .into("noteful_folders")
         .insert(testFolders)
@@ -88,6 +88,28 @@ describe(`GET /api/notes/:note_id`, () => {
       return supertest(app)
         .get(`/api/notes/${invalidId}`)
         .expect(404, { error: { message: `Note doesn't exist` } });
+    });
+  });
+
+  context(`Given there are notes`, () => {
+    const testFolders = makeFoldersArray();
+    const testNotes = makeNotesArray();
+
+    beforeEach(`Insert folders and notes`, () => {
+      return db
+        .into("noteful_folders")
+        .insert(testFolders)
+        .then(() => {
+          return db.into("noteful_notes").insert(testNotes);
+        });
+    });
+
+    it(`Responds with 200 and specified note`, () => {
+      const noteId = 2;
+      const expectedNote = testNotes[noteId - 1];
+      return supertest(app)
+        .get(`/api/notes/${noteId}`)
+        .expect(200, expectedNote);
     });
   });
 });
