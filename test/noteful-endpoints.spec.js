@@ -169,6 +169,11 @@ describe(`POST /api/notes`, () => {
         const expected = new Date().toLocaleString();
         const actual = new Date(res.body.date_published).toLocaleString();
         expect(actual).to.eql(expected);
+      })
+      .then(res => {
+        supertest(app)
+          .get(`/api/notes/${res.body.id}`)
+          .expect(res.body);
       });
   });
 });
