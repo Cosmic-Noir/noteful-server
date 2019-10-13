@@ -56,7 +56,7 @@ describe(`GET /api/notes`, () => {
     });
   });
 
-  context(`Sanitize note for XSS attack`, () => {
+  context(`Given note with XSS attack`, () => {
     const { maliciousNote, expectedNote } = makeMaliciousNote();
     const testFolders = makeFoldersArray();
 
@@ -69,7 +69,7 @@ describe(`GET /api/notes`, () => {
         });
     });
 
-    it(`Removes xss attack code`, () => {
+    it(`Sanitizes note of XSS attack`, () => {
       return supertest(app)
         .get(`/api/notes`)
         .expect(200)
@@ -110,6 +110,30 @@ describe(`GET /api/notes/:note_id`, () => {
       return supertest(app)
         .get(`/api/notes/${noteId}`)
         .expect(200, expectedNote);
+    });
+  });
+
+  context(`Given a note with XSS attack`, () => {
+    const testFolders = makeFoldersArray();
+    const { maliciousNote, expectedNote } = makeMaliciousNote();
+
+    beforeEach(`Insert folders and notes`, () => {
+      return db
+        .into("noteful_folders")
+        .insert(testFolders)
+        .then(() => {
+          return db.into("noteful_notes").insert(maliciousNote);
+        });
+    });
+
+    it(`Sanitzes XSS attack from note`, () => {
+      return supertest(app)
+        .get(`/api/notes/${maliciousNote.id}`)
+        .expect(200)
+        .expect(res => {
+          expect(res.body.title).to.eql(expectedNote.title);
+          expect(res.body.content).to.eql(expectedNote.content);
+        });
     });
   });
 });
