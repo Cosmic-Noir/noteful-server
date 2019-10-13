@@ -80,3 +80,14 @@ describe(`GET /api/notes`, () => {
     });
   });
 });
+
+describe(`GET /api/notes/:note_id`, () => {
+  context(`Given no notes`, () => {
+    it(`Responds with 404`, () => {
+      const invalidId = 12345;
+      return supertest(app)
+        .get(`/api/notes/${invalidId}`)
+        .expect(404, { error: { message: `Note doesn't exist` } });
+    });
+  });
+});
