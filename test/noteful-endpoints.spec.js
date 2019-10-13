@@ -55,4 +55,28 @@ describe(`GET /api/notes`, () => {
         .expect(200, testNotes);
     });
   });
+
+  context(`Sanitize note for XSS attack`, () => {
+    const { maliciousNote, expectedNote } = makeMaliciousNote();
+    const testFolders = makeFoldersArray();
+
+    beforeEach("Insert malicious note", () => {
+      return db
+        .into("noteful_folders")
+        .insert(testFolders)
+        .then(() => {
+          return db.into("noteful_notes").insert(maliciousNote);
+        });
+    });
+
+    it(`Removes xss attack code`, () => {
+      return supertest(app)
+        .get(`/api/notes`)
+        .expect(200)
+        .expect(res => {
+          expect(res.body[0].title).to.eql(expectedNote.title);
+          expect(res.body[0].content).to.eql(expectedNote.content);
+        });
+    });
+  });
 });

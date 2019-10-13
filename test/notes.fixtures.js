@@ -43,7 +43,8 @@ function makeMaliciousNote() {
     id: 911,
     date_published: new Date().toISOString(),
     title: 'Naughty naughty very naughty <script>alert("xss");</script>',
-    content: `Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.`
+    content: `Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.`,
+    folder_id: 1
   };
   const expectedNote = {
     ...maliciousNote,
