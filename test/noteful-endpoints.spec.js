@@ -2,7 +2,7 @@ const { expect } = require("chai");
 const knex = require("knex");
 const app = require("../src/app");
 const { makeNotesArray, makeMaliciousNote } = require("./notes.fixtures");
-const { makeFoldersArray } = require("./folders.fixtures");
+const { makeFoldersArray, makeMaliciousFolder } = require("./folders.fixtures");
 
 let db;
 
@@ -10,7 +10,7 @@ let db;
 before("make knex instance", () => {
   db = knex({
     client: "pg",
-    connection: ProcessingInstruction.env.TEST_DB_URL
+    connection: process.env.TEST_DB_URL
   });
   app.set("db", db);
 });
@@ -27,3 +27,12 @@ afterEach("cleanup", () =>
 );
 
 // GET
+describe(`GET /api/notes`, () => {
+  context(`Given there are no notes`, () => {
+    it(`Responds with 200 and an empty list`, () => {
+      return supertest(app)
+        .get("/api/notes")
+        .expect(200, []);
+    });
+  });
+});
