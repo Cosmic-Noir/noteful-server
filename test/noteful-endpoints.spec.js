@@ -137,3 +137,39 @@ describe(`GET /api/notes/:note_id`, () => {
     });
   });
 });
+
+describe(`POST /api/notes`, () => {
+  it(`Creates note, responds with 201 and new note`, function() {
+    this.retries(3);
+    const testFolders = makeFoldersArray();
+
+    beforeEach("cleanup", () =>
+      db.raw("TRUNCATE noteful_notes, noteful_folders RESTART IDENTITY CASCADE")
+    );
+    beforeEach(`Insert test folders`, () => {
+      return db.into("noteful_folders").insert(testFolders);
+    });
+
+    const newNote = {
+      title: "The Newest Note",
+      content: "The newest and hippest content",
+      folder_id: 2
+    };
+
+    return supertest(app)
+      .post(`/api/notes`)
+      .send(newNote)
+      .expect(201)
+      .expect(res => {
+        expect(res.body.title).to.eql(newNote.title);
+        expect(res.body.content).to.eql(newNote.content);
+        expect(res.body).to.have.property("id");
+        expect(res.headers.location).to.eql(`/api/notes/${res.body.id}`);
+        // const expected = new Date().toLocaleString();
+        // const actual = new Date(res.body.date_created).toLocaleString();
+        // expect(actual).to.eql(expected);
+      })
+      .then(res => supertest(app).get(`/api/notes/${res.body.id}`))
+      .expect(res.body);
+  });
+});
