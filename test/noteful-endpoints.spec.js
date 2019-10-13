@@ -163,13 +163,14 @@ describe(`POST /api/notes`, () => {
       .expect(res => {
         expect(res.body.title).to.eql(newNote.title);
         expect(res.body.content).to.eql(newNote.content);
+        expect(res.body.folder_id).to.eql(newNote.folder_id);
         expect(res.body).to.have.property("id");
         expect(res.headers.location).to.eql(`/api/notes/${res.body.id}`);
         // const expected = new Date().toLocaleString();
         // const actual = new Date(res.body.date_created).toLocaleString();
         // expect(actual).to.eql(expected);
-      })
-      .then(res => supertest(app).get(`/api/notes/${res.body.id}`))
-      .expect(res.body);
+      });
+    // .then(res => supertest(app).get(`/api/notes/${res.body.id}`))
+    // .expect(res.body);
   });
 });
