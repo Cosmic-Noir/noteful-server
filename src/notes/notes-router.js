@@ -37,7 +37,6 @@ notesRouter
         });
       }
     }
-    // newNote.folder_id = folder_id;
 
     NotesService.insertNote(req.app.get("db"), newNote)
       .then(note => {
